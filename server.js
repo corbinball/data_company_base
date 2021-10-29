@@ -35,6 +35,40 @@ const db = mysql.createConnection(
             ]
         },
     ])
-    
+    .then(answer => {
+        switch (answer.selected) {
+            case 'View all employees':
+                viewAllEmployees();
+            break;
+
+            case 'Add employee':
+                addEmployee();
+            break;
+
+            case 'Update Employee Role':
+                UpdateEmployeeRole();
+            break;
+
+            case 'View all roles':
+                viewAllRoles();
+            break;
+
+            case 'Add role':
+                addRole();
+            break;
+
+            case 'View all departments':
+                viewAllDepartments();
+            break;
+
+            case 'Add department':
+                addDepartment();
+            break;
+
+            case 'Quit':
+                db.end();
+            break;
+        };
+    });
    
     }
