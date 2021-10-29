@@ -13,7 +13,7 @@ const db = mysql.createConnection(
       database: 'theworkplace_db'
     },
     console.log(`Connected to the theworkplace_db.`)
-  );
+);
 
 const companyQuestions = () => {
     inquirer.prompt([
@@ -45,7 +45,7 @@ const companyQuestions = () => {
             break;
 
             case 'Update Employee Role':
-                UpdateEmployeeRole();
+                updateEmployeeRole();
             break;
 
             case 'View all roles':
@@ -68,7 +68,8 @@ const companyQuestions = () => {
                 db.end();
             break;
 
-            default: 'Error, error';
+            default: 
+            break;
     
         };
     });
@@ -81,7 +82,7 @@ const viewAllEmployees = () => {
       console.table(res)
       companyQuestions();
     });
-  };
+};
 
 const viewAllDepartments = () =>{
     db.query(`SELECT * FROM department;`,(err, res) => {
@@ -89,7 +90,7 @@ const viewAllDepartments = () =>{
       console.table(res)
       companyQuestions();
     });
-  };
+};
 
 const viewAllRoles = () =>{
     db.query(`SELECT * FROM role;`,(err, res) => {
@@ -97,9 +98,9 @@ const viewAllRoles = () =>{
       console.table(res)
       companyQuestions();
     });
-  };
+};
 
-  const addEmployee = () => {
+const addEmployee = () => {
     db.query(`SELECT id, title FROM role`,(err, data)=>{
       const roleChoices = data.map(roles =>({
         value: roles.id,
@@ -165,9 +166,9 @@ const addDepartment = () =>{
           companyQuestions();
         });
     });
-  };
+};
 
-  const addRole = () => {
+const addRole = () => {
     db.query(`SELECT * FROM department;`, (err, data)=>{
       if (err) throw err;
       const departmentChoices = data.map(department=>({
@@ -204,5 +205,47 @@ const addDepartment = () =>{
       console.log(response);
     });
   })
-  };
+};
   
+const updateEmployeeRole = () => {
+    db.query(`SELECT id, title FROM role`,(err, data)=>{
+      const roleChoice = data.map(roles =>({
+        value: roles.id,
+        name: roles.title,
+      }));
+      db.query(`SELECT id, first_name, last_name FROM employee`,(err,data)=>{
+        const empChoice = data.map(employees =>({
+          value: employees.id,
+          name: employees.first_name + " " + employee.last_name,
+        }))
+  
+        
+    inquirer.prompt([
+      {
+        name: 'updatedEmp',
+        type: 'list',
+        message: 'Please choose employee to update:',
+        choices: empChoice
+      },
+      {
+        name: 'updatedRole',
+        type: 'list',
+        message: 'Please enter updated role:',
+        choices: roleChoice
+      }
+    ])
+      .then((response) => {
+        db.query(`UPDATE employee SET role_id = ${response.updatedRole} WHERE id = ${response.updatedEmp};`, (err, res) => {
+            if (err) throw err;
+            console.log('Updated')
+            companyQuestions();
+          });
+        });
+      })
+      })
+};
+
+db.connect((err) => {
+    if (err) throw err;
+    companyQuestions();
+});
