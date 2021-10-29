@@ -16,7 +16,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the theworkplace_db.`)
   );
 
-  const companyQuestions = () => {
+const companyQuestions = () => {
     inquirer.prompt([
 
         {
@@ -70,5 +70,13 @@ const db = mysql.createConnection(
             break;
         };
     });
-   
-    }
+
+}
+
+const viewAllEmployees = () => {
+    db.query(`SELECT * FROM employees;`,(err, res) => {
+      if (err) throw err;
+      console.table(res)
+      companyQuestions();
+    });
+  };
