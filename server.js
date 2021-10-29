@@ -83,8 +83,16 @@ const viewAllEmployees = () => {
     });
   };
 
-  const viewAllDepartments = () =>{
+const viewAllDepartments = () =>{
     db.query(`SELECT * FROM department;`,(err, res) => {
+      if (err) throw err;
+      console.table(res)
+      companyQuestions();
+    });
+  };
+
+const viewAllRoles = () =>{
+    db.query(`SELECT * FROM role;`,(err, res) => {
       if (err) throw err;
       console.table(res)
       companyQuestions();
