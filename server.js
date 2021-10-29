@@ -99,6 +99,56 @@ const viewAllRoles = () =>{
     });
   };
 
-
+  const addEmployee = () => {
+    db.query(`SELECT id, title FROM role`,(err, data)=>{
+      const rolesArray = data.map(roles =>({
+        value: roles.id,
+        name: roles.title,
+      }));
+      db.query(`SELECT id, first_name, last_name FROM employee`,(err,data)=>{
+        const managersArray = data.map(employees =>({
+          value: employees.id,
+          name: employees.first_name + " " + employees.last_name,
+        }))
+        managersArray.push({
+          value: null,
+          name: "No manager",
+        })
+      inquirer.prompt([
+      {
+        name: 'empFirst',
+        type: 'input',
+        message: 'Please enter employees First Name:'
+      },
+      {
+        name: 'empLast',
+        type: 'input',
+        message: 'Please eneter employees Last Name:'
+      },
+      {
+        name: 'empRole',
+        type: 'list',
+        message: 'Please enter employees role:',
+        choices: rolesArray
+      },
+      {
+        name: 'managerId',
+        type: 'list',
+        message: 'Choose the employee\'s manager: ',
+        choices: managersArray
+      }
+    
+      ])
+      .then((response) => {
+        console.log(response);
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${response.empFirst}', '${response.empLast}', ${response.empRole}, ${response.managerId});`, (err, res) => {
+            if (err) throw err;
+            console.log('Employee has been added')
+            companyQuestions();
+          });
+      });
+    })
+    })
+};
 
 
