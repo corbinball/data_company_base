@@ -3,7 +3,6 @@ const  inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
-const PORT = process.env.PORT || 3001;
 
 // connect to db
 const db = mysql.createConnection(
@@ -21,7 +20,7 @@ const companyQuestions = () => {
 
         {
             type: "list",
-            name: "licenseChoice",
+            name: "userChoices",
             message: "What would you like to do?",
             choices: [
                 "View all employees",
@@ -68,6 +67,9 @@ const companyQuestions = () => {
             case 'Quit':
                 db.end();
             break;
+
+            default: 'Error, error';
+    
         };
     });
 
@@ -80,3 +82,15 @@ const viewAllEmployees = () => {
       companyQuestions();
     });
   };
+
+  const viewAllDepartments = () =>{
+    db.query(`SELECT * FROM department;`,(err, res) => {
+      if (err) throw err;
+      console.table(res)
+      companyQuestions();
+    });
+  };
+
+
+
+
