@@ -35,7 +35,7 @@ const companyQuestions = () => {
         },
     ])
     .then(answer => {
-        switch (answer.selected) {
+        switch (answer.userChoices) {
             case 'View all employees':
                 viewAllEmployees();
             break;
@@ -93,7 +93,7 @@ const viewAllDepartments = () =>{
 };
 
 const viewAllRoles = () =>{
-    db.query(`SELECT * FROM role;`,(err, res) => {
+    db.query(`SELECT * FROM roles;`,(err, res) => {
       if (err) throw err;
       console.table(res)
       companyQuestions();
@@ -101,12 +101,12 @@ const viewAllRoles = () =>{
 };
 
 const addEmployee = () => {
-    db.query(`SELECT id, title FROM role`,(err, data)=>{
+    db.query(`SELECT id, title FROM roles`,(err, data)=>{
       const roleChoices = data.map(roles =>({
         value: roles.id,
         name: roles.title,
       }));
-      db.query(`SELECT id, first_name, last_name FROM employee`,(err,data)=>{
+      db.query(`SELECT id, first_name, last_name FROM employees`,(err,data)=>{
         const managerChoies = data.map(employees =>({
           value: employees.id,
           name: employees.first_name + " " + employees.last_name,
@@ -142,7 +142,7 @@ const addEmployee = () => {
       ])
       .then((response) => {
         console.log(response);
-        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${response.empFirst}', '${response.empLast}', ${response.empRole}, ${response.managerId});`, (err, res) => {
+        db.query(`INSERT INTO employees (first_name, last_name, roles_id, manager_id) VALUES ('${response.empFirst}', '${response.empLast}', ${response.empRole}, ${response.managerId});`, (err, res) => {
             if (err) throw err;
             console.log('Employee added')
             companyQuestions();
@@ -197,7 +197,7 @@ const addRole = () => {
   ])
   
     .then((response) => {
-      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${response.roleName}', ${response.roleSalary}, ${response.departMents});`, (err, res) => {
+      db.query(`INSERT INTO roles (title, salary, department_id) VALUES ('${response.roleName}', ${response.roleSalary}, ${response.departMents});`, (err, res) => {
           if (err) throw err;
           console.log('Role added')
           companyQuestions();
@@ -208,7 +208,7 @@ const addRole = () => {
 };
   
 const updateEmployeeRole = () => {
-    db.query(`SELECT id, title FROM role`,(err, data)=>{
+    db.query(`SELECT id, title FROM roles`,(err, data)=>{
       const roleChoice = data.map(roles =>({
         value: roles.id,
         name: roles.title,
